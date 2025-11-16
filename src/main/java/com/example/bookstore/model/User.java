@@ -1,51 +1,50 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package com.example.bookstore.model;
 
-/**
- *
- * @author ppc
- */
+import jakarta.persistence.*;
+import java.util.Date;
+
+@Entity
+@Table(name = "users")
 public class User {
-    private int id;
-    private String firstName;
-    private String lastName;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Use IDENTITY for serial/auto-increment
+    private Integer id;
+    private String name;
     private String email;
+    private String password;
+    private String role; // e.g., "USER", "ADMIN"
 
-    // public User() {}
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
 
-    public User(int id, String firstName, String lastName, String email) {
-        this.id = id; 
-        this.firstName = firstName;
-        this.lastName = lastName;
+    // Constructor without id (id is auto-generated)
+    public User(String name, String email, String password, String role, Date createdAt) {
+        this.name = name;
         this.email = email;
+        this.password = password;
+        this.role = role;
+        this.createdAt = createdAt;
     }
 
-    public int getId() {
+    // Default constructor
+    public User() {}
+
+    // Getters and setters
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getName() {
+        return name;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -56,37 +55,27 @@ public class User {
         this.email = email;
     }
 
-    public String getFullName() {
-        if (firstName == null && lastName == null) return "";
-        if (firstName == null) return lastName;
-        if (lastName == null) return firstName;
-        return firstName + " " + lastName;
+    public String getPassword() {
+        return password;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
-        User user = (User) o;
-        return java.util.Objects.equals(id, user.id) &&
-               java.util.Objects.equals(firstName, user.firstName) &&
-               java.util.Objects.equals(lastName, user.lastName) &&
-               java.util.Objects.equals(email, user.email);
+    public String getRole() {
+        return role;
     }
 
-    @Override
-    public int hashCode() {
-        return java.util.Objects.hash(id, firstName, lastName, email);
+    public void setRole(String role) {
+        this.role = role;
     }
 
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
 }
