@@ -1,17 +1,17 @@
 package com.example.bookstore.model;
 
-import java.util.UUID;
+//import java.util.Integer;
 
 public class Order_Items {
-    private UUID id;
-    private UUID orderID;
-    private UUID bookID;
+    private Integer id;
+    private Integer orderID;
+    private Integer bookID;
     private int quantity;
     private float price;
 
     public Order_Items() {}
 
-    public Order_Items(UUID id, UUID orderID, UUID bookID, int quantity, float price) {
+    public Order_Items(Integer id, Integer orderID, Integer bookID, int quantity, float price) {
         this.id = id;
         this.orderID = orderID;
         this.bookID = bookID;
@@ -19,27 +19,27 @@ public class Order_Items {
         this.price = price;
     }
 
-    public UUID getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public UUID getOrderID() {
+    public Integer getOrderID() {
         return orderID;
     }
 
-    public void setOrderID(UUID orderID) {
+    public void setOrderID(Integer orderID) {
         this.orderID = orderID;
     }
 
-    public UUID getBookID() {
+    public Integer getBookID() {
         return bookID;
     }
 
-    public void setBookID(UUID bookID) {
+    public void setBookID(Integer bookID) {
         this.bookID = bookID;
     }
 

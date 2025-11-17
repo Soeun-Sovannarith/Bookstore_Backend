@@ -5,15 +5,19 @@
 
 package com.example.bookstore.model;
 
-import java.util.UUID;
+import jakarta.persistence.*;
 
 /**
  *
  * @author ppc
  */
 
+@Entity
+@Table(name = "books")
 public class Book {
-    private UUID bookID;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer bookID;
     private String title;
     private String author;
     private String published_date;
@@ -21,8 +25,12 @@ public class Book {
     private String category;
     private double price;
     private String description;
+    private String imageURL;
 
-    public Book(UUID bookID, String title, String author, String published_date, int stock, String category, double price, String description, String imageURL) {
+    // Default constructor
+    public Book() {}
+
+    public Book(Integer bookID, String title, String author, String published_date, int stock, String category, double price, String description, String imageURL) {
         this.bookID = bookID;
         this.title = title;
         this.author = author;
@@ -34,13 +42,11 @@ public class Book {
         this.imageURL = imageURL;
     }
 
-    private String imageURL;
-
-    public UUID getBookID() {
+    public Integer getBookID() {
         return bookID;
     }
 
-    public void setBookID(UUID bookID) {
+    public void setBookID(Integer bookID) {
         this.bookID = bookID;
     }
 
@@ -108,5 +114,3 @@ public class Book {
         this.imageURL = imageURL;
     }
 }
-    
-

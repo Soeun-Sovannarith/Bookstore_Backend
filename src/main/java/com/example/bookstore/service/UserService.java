@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
+//import java.util.Integer;
 
 @Service
 public class UserService {
@@ -34,6 +34,17 @@ public class UserService {
     public User getUserById(Integer id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    public User updateUser(Integer id, User userDetails) {
+        User user = getUserById(id);
+
+        user.setName(userDetails.getName());
+        user.setEmail(userDetails.getEmail());
+        user.setPassword(userDetails.getPassword());
+        user.setRole(userDetails.getRole());
+
+        return userRepository.save(user);
     }
 
     public void deleteUser(Integer id) {

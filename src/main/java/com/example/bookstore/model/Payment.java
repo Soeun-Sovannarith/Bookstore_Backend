@@ -1,11 +1,11 @@
 package com.example.bookstore.model;
 
 import java.util.Date;
-import java.util.UUID;
+//import java.util.Integer;
 
 public class Payment {
-    private UUID id;
-    private UUID orderId;
+    private Integer id;
+    private Integer orderId;
     private float amount;
     private String paymentMethod;
     private String paymentStatus;
@@ -14,7 +14,7 @@ public class Payment {
     public Payment() {}
 
 
-    public Payment(UUID id, UUID orderId, float amount, String paymentMethod, String paymentStatus, Date createdAt) {
+    public Payment(Integer id, Integer orderId, float amount, String paymentMethod, String paymentStatus, Date createdAt) {
         this.id = id;
         this.orderId = orderId;
         this.amount = amount;
@@ -24,19 +24,19 @@ public class Payment {
 
     }
 
-    public UUID getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public UUID getOrderId() {
+    public Integer getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(UUID orderId) {
+    public void setOrderId(Integer orderId) {
         this.orderId = orderId;
     }
 

@@ -1,14 +1,14 @@
 package com.example.bookstore.model;
 
 import javax.xml.crypto.Data;
-import java.util.UUID;
+
 
 //@Entity
 public class Order {
 //    @Id
 //    @GeneratedValue
-    private UUID id;
-    private UUID userId;
+    private Integer id;
+    private Integer userId;
     private float totalAmount;
     private String status;
     private String paymentMethod;
@@ -18,7 +18,7 @@ public class Order {
 
     public Order() {}
 
-    public Order(UUID id, UUID userId, float totalAmount, String status, String paymentMethod, String paymentStatus, String shippingAddress, Data createdAt) {
+    public Order(Integer id, Integer userId, float totalAmount, String status, String paymentMethod, String paymentStatus, String shippingAddress, Data createdAt) {
         this.id = id;
         this.userId = userId;
         this.totalAmount = totalAmount;
@@ -30,19 +30,19 @@ public class Order {
     }
 
 
-    public UUID getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public UUID getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(UUID userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 

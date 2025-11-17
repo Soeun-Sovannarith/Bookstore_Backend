@@ -5,7 +5,7 @@ import com.example.bookstore.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
+//import java.util.Integer;
 
 @RestController
 @RequestMapping("/api/users")
@@ -30,6 +30,11 @@ public class UserController {
     @GetMapping("/{id}")
     public User getUserById(@PathVariable Integer id) {
         return userService.getUserById(id);
+    }
+
+    @PutMapping("/{id}")
+    public User updateUser(@PathVariable Integer id, @RequestBody User user) {
+        return userService.updateUser(id, user);
     }
 
     @DeleteMapping("/{id}")

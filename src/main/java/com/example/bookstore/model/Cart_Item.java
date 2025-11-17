@@ -1,18 +1,18 @@
 package com.example.bookstore.model;
 
 import java.util.Date;
-import java.util.UUID;
+//import java.util.Integer;
 
 public class Cart_Item {
-    private UUID id;
-    private UUID userID;
-    private UUID bookID;
+    private Integer id;
+    private Integer userID;
+    private Integer bookID;
     private int quantity;
     private Date createda_at;
 
     public Cart_Item() {}
 
-    public Cart_Item(UUID id, UUID userID, UUID bookID, int quantity, Date createda_at) {
+    public Cart_Item(Integer id, Integer userID, Integer bookID, int quantity, Date createda_at) {
         this.id = id;
         this.userID = userID;
         this.bookID = bookID;
@@ -20,27 +20,27 @@ public class Cart_Item {
         this.createda_at = createda_at;
     }
 
-    public UUID getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public UUID getUserID() {
+    public Integer getUserID() {
         return userID;
     }
 
-    public void setUserID(UUID userID) {
+    public void setUserID(Integer userID) {
         this.userID = userID;
     }
 
-    public UUID getBookID() {
+    public Integer getBookID() {
         return bookID;
     }
 
-    public void setBookID(UUID bookID) {
+    public void setBookID(Integer bookID) {
         this.bookID = bookID;
     }
 
