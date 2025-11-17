@@ -1,34 +1,36 @@
 package com.example.bookstore.model;
 
-import javax.xml.crypto.Data;
+import jakarta.persistence.*;
+import java.util.Date;
 
-
-//@Entity
+@Entity
+@Table(name = "orders")
 public class Order {
-//    @Id
-//    @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private Integer userId;
     private float totalAmount;
     private String status;
     private String paymentMethod;
     private String paymentStatus;
-    private String ShippingAddress;
-    private Data createdAt;
+    private String shippingAddress;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
 
     public Order() {}
 
-    public Order(Integer id, Integer userId, float totalAmount, String status, String paymentMethod, String paymentStatus, String shippingAddress, Data createdAt) {
+    public Order(Integer id, Integer userId, float totalAmount, String status, String paymentMethod, String paymentStatus, String shippingAddress, Date createdAt) {
         this.id = id;
         this.userId = userId;
         this.totalAmount = totalAmount;
         this.status = status;
         this.paymentMethod = paymentMethod;
         this.paymentStatus = paymentStatus;
-        ShippingAddress = shippingAddress;
+        this.shippingAddress = shippingAddress;
         this.createdAt = createdAt;
     }
-
 
     public Integer getId() {
         return id;
@@ -79,20 +81,18 @@ public class Order {
     }
 
     public String getShippingAddress() {
-        return ShippingAddress;
+        return shippingAddress;
     }
 
     public void setShippingAddress(String shippingAddress) {
-        ShippingAddress = shippingAddress;
+        this.shippingAddress = shippingAddress;
     }
 
-    public Data getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Data createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
-
-
 }
