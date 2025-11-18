@@ -23,8 +23,11 @@ public class ApiKeyInterceptor implements HandlerInterceptor {
 
             // Check if the method has @ApiKeyRequired annotation
             if (handlerMethod.getMethodAnnotation(ApiKeyRequired.class) != null) {
+
+                // check for the API key in the request header
                 String providedApiKey = request.getHeader(API_KEY_HEADER);
 
+                // check whether the provided API key matches the expected API key
                 if (providedApiKey == null || !API_KEY.equals(providedApiKey)) {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     response.setContentType("application/json");
