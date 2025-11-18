@@ -1,23 +1,29 @@
 package com.example.bookstore.model;
 
 import java.util.Date;
-//import java.util.Integer;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "cart_items")
 public class Cart_Item {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Integer userID;
-    private Integer bookID;
+    private Integer userId;
+    private Integer bookId;
     private int quantity;
-    private Date createda_at;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
 
     public Cart_Item() {}
 
-    public Cart_Item(Integer id, Integer userID, Integer bookID, int quantity, Date createda_at) {
+    public Cart_Item(Integer id, Integer userId, Integer bookId, int quantity, Date createdAt) {
         this.id = id;
-        this.userID = userID;
-        this.bookID = bookID;
+        this.userId = userId;
+        this.bookId = bookId;
         this.quantity = quantity;
-        this.createda_at = createda_at;
+        this.createdAt = createdAt;
     }
 
     public Integer getId() {
@@ -28,20 +34,20 @@ public class Cart_Item {
         this.id = id;
     }
 
-    public Integer getUserID() {
-        return userID;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setUserID(Integer userID) {
-        this.userID = userID;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
-    public Integer getBookID() {
-        return bookID;
+    public Integer getBookId() {
+        return bookId;
     }
 
-    public void setBookID(Integer bookID) {
-        this.bookID = bookID;
+    public void setBookId(Integer bookId) {
+        this.bookId = bookId;
     }
 
     public int getQuantity() {
@@ -52,11 +58,11 @@ public class Cart_Item {
         this.quantity = quantity;
     }
 
-    public Date getCreateda_at() {
-        return createda_at;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreateda_at(Date createda_at) {
-        this.createda_at = createda_at;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 }

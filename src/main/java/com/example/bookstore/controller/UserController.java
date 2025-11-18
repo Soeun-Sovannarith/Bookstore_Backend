@@ -2,10 +2,10 @@ package com.example.bookstore.controller;
 
 import com.example.bookstore.model.User;
 import com.example.bookstore.service.UserService;
+import com.example.bookstore.security.ApiKeyRequired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-//import java.util.Integer;
 
 @RestController
 @RequestMapping("/api/users")
@@ -17,6 +17,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    @ApiKeyRequired
     @PostMapping
     public User createUser(@RequestBody User user) {
         return userService.createUser(user);
@@ -32,11 +33,13 @@ public class UserController {
         return userService.getUserById(id);
     }
 
+    @ApiKeyRequired
     @PutMapping("/{id}")
     public User updateUser(@PathVariable Integer id, @RequestBody User user) {
         return userService.updateUser(id, user);
     }
 
+    @ApiKeyRequired
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Integer id) {
         userService.deleteUser(id);

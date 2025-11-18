@@ -1,14 +1,20 @@
 package com.example.bookstore.model;
 
+import jakarta.persistence.*;
 import java.util.Date;
-//import java.util.Integer;
 
+@Entity
+@Table(name = "payments")
 public class Payment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private Integer orderId;
     private float amount;
     private String paymentMethod;
     private String paymentStatus;
+
+    @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
     public Payment() {}
