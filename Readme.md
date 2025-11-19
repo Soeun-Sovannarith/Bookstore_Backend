@@ -1058,7 +1058,7 @@ All responses are in JSON format. Error responses include an `error` field with 
 
 ### API Key Usage (for Book Management)
 - Some book management endpoints (POST, PUT, DELETE) require an API key
-- Include in request header: `X-API-Key: Jct6ISFPFCPTVN5Owb3zsf9j6CMWR3qADNrp9r18icxwkibA`
+  - Include in request header: `X-API-Key: {SecretApiKey}`
 
 ### User Roles
 - **USER:** Standard user privileges
