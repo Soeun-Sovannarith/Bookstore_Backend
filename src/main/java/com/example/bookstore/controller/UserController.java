@@ -2,7 +2,7 @@ package com.example.bookstore.controller;
 
 import com.example.bookstore.model.User;
 import com.example.bookstore.service.UserService;
-import com.example.bookstore.security.ApiKeyRequired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,13 +17,13 @@ public class UserController {
         this.userService = userService;
     }
 
-    @ApiKeyRequired
     @PostMapping
     public User createUser(@RequestBody User user) {
         return userService.createUser(user);
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
@@ -33,14 +33,13 @@ public class UserController {
         return userService.getUserById(id);
     }
 
-    @ApiKeyRequired
     @PutMapping("/{id}")
     public User updateUser(@PathVariable Integer id, @RequestBody User user) {
         return userService.updateUser(id, user);
     }
 
-    @ApiKeyRequired
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteUser(@PathVariable Integer id) {
         userService.deleteUser(id);
     }

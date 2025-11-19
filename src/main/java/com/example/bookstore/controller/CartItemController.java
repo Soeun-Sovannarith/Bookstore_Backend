@@ -2,7 +2,6 @@ package com.example.bookstore.controller;
 
 import com.example.bookstore.model.Cart_Item;
 import com.example.bookstore.service.CartItemService;
-import com.example.bookstore.security.ApiKeyRequired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +16,6 @@ public class CartItemController {
         this.cartItemService = cartItemService;
     }
 
-    @ApiKeyRequired
     @PostMapping
     public Cart_Item createCartItem(@RequestBody Cart_Item cartItem) {
         return cartItemService.createCartItem(cartItem);
@@ -38,13 +36,11 @@ public class CartItemController {
         return cartItemService.getCartItemsByUserId(userId);
     }
 
-    @ApiKeyRequired
     @PutMapping("/{id}")
     public Cart_Item updateCartItem(@PathVariable Integer id, @RequestBody Cart_Item cartItem) {
         return cartItemService.updateCartItem(id, cartItem);
     }
 
-    @ApiKeyRequired
     @DeleteMapping("/{id}")
     public void deleteCartItem(@PathVariable Integer id) {
         cartItemService.deleteCartItem(id);

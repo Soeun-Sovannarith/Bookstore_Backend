@@ -2,7 +2,6 @@ package com.example.bookstore.controller;
 
 import com.example.bookstore.model.Payment;
 import com.example.bookstore.service.PaymentService;
-import com.example.bookstore.security.ApiKeyRequired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +16,6 @@ public class PaymentController {
         this.paymentService = paymentService;
     }
 
-    @ApiKeyRequired
     @PostMapping
     public Payment createPayment(@RequestBody Payment payment) {
         return paymentService.createPayment(payment);
@@ -48,13 +46,11 @@ public class PaymentController {
         return paymentService.getPaymentsByMethod(method);
     }
 
-    @ApiKeyRequired
     @PutMapping("/{id}")
     public Payment updatePayment(@PathVariable Integer id, @RequestBody Payment payment) {
         return paymentService.updatePayment(id, payment);
     }
 
-    @ApiKeyRequired
     @DeleteMapping("/{id}")
     public void deletePayment(@PathVariable Integer id) {
         paymentService.deletePayment(id);
