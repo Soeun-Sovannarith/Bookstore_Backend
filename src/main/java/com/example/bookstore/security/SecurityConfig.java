@@ -62,9 +62,10 @@ public class SecurityConfig {
                 .requestMatchers("/api/books/**").permitAll()// Book endpoints remain public
                 .requestMatchers("/", "/index.html").permitAll()
                     .requestMatchers("/api/cart-items/**").permitAll()
+                    .requestMatchers("/api/users/{id}").permitAll() // Debug endpoint
 
                 // Protected endpoints (authentication required)
-                .requestMatchers("/api/users/**").hasAnyRole("ADMIN")
+                .requestMatchers("/api/users").hasAnyRole("ADMIN")
                 .requestMatchers("/api/orders/**").hasAnyRole("USER", "ADMIN")
                 .requestMatchers("/api/payments/**").hasAnyRole("USER", "ADMIN")
 
