@@ -59,12 +59,12 @@ public class SecurityConfig {
             .authorizeHttpRequests(authz -> authz
                 // Public endpoints (no authentication required)
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/books/**").permitAll()  // Book endpoints remain public
+                .requestMatchers("/api/books/**").permitAll()// Book endpoints remain public
                 .requestMatchers("/", "/index.html").permitAll()
+                    .requestMatchers("/api/cart-items/**").permitAll()
 
                 // Protected endpoints (authentication required)
                 .requestMatchers("/api/users/**").hasAnyRole("ADMIN")
-                .requestMatchers("/api/cart-items/**").hasAnyRole("USER", "ADMIN")
                 .requestMatchers("/api/orders/**").hasAnyRole("USER", "ADMIN")
                 .requestMatchers("/api/payments/**").hasAnyRole("USER", "ADMIN")
 
