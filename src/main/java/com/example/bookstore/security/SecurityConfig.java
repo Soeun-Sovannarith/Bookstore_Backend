@@ -28,8 +28,9 @@ public class SecurityConfig {
     @Autowired
     private CustomUserDetailsService userDetailsService;
 
-    @Autowired
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
+    // ⚠️ TESTING MODE: JWT Filter commented out - uncomment when ready to use authentication
+    // @Autowired
+    // private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Autowired
     private LoggingAccessDeniedHandler accessDeniedHandler;
@@ -57,27 +58,16 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(authz -> authz
-                // Public endpoints (no authentication required)
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/books/**").permitAll()// Book endpoints remain public
-                .requestMatchers("/", "/index.html").permitAll()
-                    .requestMatchers("/api/cart-items/**").permitAll()
-                    .requestMatchers("/api/users/{id}").permitAll() // Debug endpoint
-
-                // Protected endpoints (authentication required)
-                .requestMatchers("/api/users").hasAnyRole("ADMIN")
-                .requestMatchers("/api/orders/**").hasAnyRole("USER", "ADMIN")
-                .requestMatchers("/api/payments/**").hasAnyRole("USER", "ADMIN")
-
-                // Admin only endpoints
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-
-                .anyRequest().authenticated()
+                // ⚠️ TESTING MODE: ALL ENDPOINTS ARE PUBLIC - DISABLE IN PRODUCTION! ⚠️
+                .anyRequest().permitAll()
             )
-            .exceptionHandling(ex -> ex.accessDeniedHandler(accessDeniedHandler))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authenticationProvider(authenticationProvider())
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+            .exceptionHandling(exception -> exception
+                .accessDeniedHandler(accessDeniedHandler)
+            );
+
+        // Comment out JWT filter for testing - uncomment when ready to use authentication
+        // http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -86,7 +76,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:5173"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setExposedHeaders(List.of("Authorization"));

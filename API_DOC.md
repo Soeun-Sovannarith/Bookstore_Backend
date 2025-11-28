@@ -137,6 +137,122 @@
 ```
 
 ### Payment
+- **Auth**: JWT required
+- **Description**: Get payment details by ID
+
+### 4. Get Payments by Order ID
+- **URL**: `GET /api/payments/order/{orderId}`
+- **Auth**: JWT required
+- **Description**: Get all payments for a specific order
+
+### 5. Get Payments by Status
+- **URL**: `GET /api/payments/status/{status}`
+- **Auth**: JWT required
+- **Description**: Get payments by status
+- **Example**: `GET /api/payments/status/COMPLETED`
+
+### 6. Get Payments by Method
+- **URL**: `GET /api/payments/method/{method}`
+- **Auth**: JWT required
+- **Description**: Get payments by method
+- **Example**: `GET /api/payments/method/CREDIT_CARD`
+
+### 7. Update Payment
+- **URL**: `PUT /api/payments/{id}`
+- **Auth**: JWT required
+- **Description**: Update payment information
+
+### 8. Delete Payment
+- **URL**: `DELETE /api/payments/{id}`
+- **Auth**: JWT required
+- **Description**: Delete a payment record
+
+---
+
+## Bakong KHQR Payment Endpoints
+
+### 1. Generate Bakong QR Code
+- **URL**: `POST /api/payments/bakong/generate-qr`
+- **Auth**: JWT required
+- **Description**: Generate a Bakong KHQR code for payment
+- **Request Body**:
+```json
+{
+  "orderId": 1,
+  "currency": "USD"
+}
+```
+- **Response**:
+```json
+{
+  "qrCode": "00020101021229370016khqr.aba.com.kh0123456789...",
+  "md5": "abc123def456...",
+  "billNumber": "ORDER-1-1732781234567",
+  "amount": 50.0,
+  "currency": "USD"
+}
+```
+- **Supported Currencies**: `USD`, `KHR`
+- **Note**: The `qrCode` field contains the KHQR string that should be encoded as a QR image for customers to scan
+
+### 2. Verify Payment Status
+- **URL**: `POST /api/payments/bakong/verify-payment`
+- **Auth**: JWT required
+- **Description**: Verify if a Bakong payment has been completed
+- **Query Parameters**:
+  - `md5`: MD5 hash from QR generation
+  - `orderId`: Order ID to verify
+- **Example**: `POST /api/payments/bakong/verify-payment?md5=abc123&orderId=1`
+- **Response**:
+```json
+{
+  "status": "pending",
+  "message": "Payment verification not yet implemented"
+}
+```
+- **Note**: This endpoint is a placeholder. Full implementation requires Bakong webhook setup or API polling
+
+### 3. Bakong Webhook (Optional)
+- **URL**: `POST /api/payments/bakong/webhook`
+- **Auth**: None (Bakong server callback)
+- **Description**: Receives payment notifications from Bakong
+- **Note**: This endpoint is for Bakong system callbacks only
+
+---
+
+## How to Use Bakong KHQR Payment
+
+### Payment Flow:
+
+1. **Customer proceeds to checkout** → Creates an order
+
+2. **Frontend requests QR code**:
+   ```bash
+   POST /api/payments/bakong/generate-qr
+   Headers: Authorization: Bearer {jwt_token}
+   Body: {"orderId": 1, "currency": "USD"}
+   ```
+
+3. **Backend generates and returns KHQR data**
+
+4. **Frontend displays QR code** using the `qrCode` string
+
+5. **Customer scans QR** with Bakong app on their phone
+
+6. **Customer confirms payment** in Bakong app
+
+7. **Payment is processed** by Bakong
+
+8. **Order status updated** (via webhook or manual verification)
+
+### Testing the QR Code:
+
+1. Use the `/generate-qr` endpoint to get the KHQR string
+2. Use an online QR generator to create a QR image from the string
+3. Scan the QR code with Bakong app (sandbox or production)
+4. Complete the payment in the app
+
+---
 ```json
 {
   "id": 1,

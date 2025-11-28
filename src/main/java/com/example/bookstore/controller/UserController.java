@@ -2,7 +2,6 @@ package com.example.bookstore.controller;
 
 import com.example.bookstore.model.User;
 import com.example.bookstore.service.UserService;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,7 +22,8 @@ public class UserController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    // ⚠️ TESTING MODE: @PreAuthorize disabled - uncomment when ready to use authentication
+    // @PreAuthorize("hasRole('ADMIN')")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
@@ -39,7 +39,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    // ⚠️ TESTING MODE: @PreAuthorize disabled - uncomment when ready to use authentication
+    // @PreAuthorize("hasRole('ADMIN')")
     public void deleteUser(@PathVariable Integer id) {
         userService.deleteUser(id);
     }

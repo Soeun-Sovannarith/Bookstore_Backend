@@ -1,467 +1,43 @@
-You are building a full frontend (React SPA) for an existing Bookstore backend API.
 
 The backend is a Spring Boot application running at `http://localhost:8080`. Your job is to generate a complete, production-ready frontend that matches this backend EXACTLY in terms of routes, auth, and data models.
-
 ---
 
 ## High-Level Requirements
-
 - Tech stack: **React** (preferably with TypeScript, React Router, and a simple state management solution like Context or a small store)
 - Base API URL: `http://localhost:8080`
 - CORS: Backend already allows `http://localhost:3000`
 - Auth:
   - JWT-based authentication using `Authorization: Bearer <token>`
-  - Some endpoints additionally require an API key header `X-API-Key`
 - Data models: **User**, **Book**, **Order**, **Cart Item**, **Payment**
 - Build a modern, clean Bookstore UI with:
   - Public catalog (list + details of books)
-  - User auth (login, register)
-  - Cart management
-  - Checkout (order + payment)
-  - Order history
-  - Basic admin tools for users and books
-
-The API specification below is the single source of truth. Wire all frontend functionality to these endpoints accordingly.
+### 3. Get Cart Items by User ID
 
 ---
 
-## Backend API Specification
-
+### 4. Update Cart Item
 ### Base URL
-
 - `http://localhost:8080`
-
-### Authentication
-
-#### JWT Token
-
-Most protected endpoints require JWT authentication:
-
-```http
-Authorization: Bearer <jwt_token>
-```
-
-#### API Key
-
-Some endpoints require an API key:
-
-```http
-X-API-Key: Jct6ISFPFCPTVN5Owb3zsf9j6CMWR3qADNrp9r18icxwkibA
-```
-
-### CORS
-
 The backend allows CORS from:
-
-- `http://localhost:3000`
-
+### 5. Delete Cart Item
 ---
 
 ## Authentication Endpoints
 
 ### 1. Register User
-
 - **URL**: `POST /api/auth/register`
 - **Auth**: None required
-- **Description**: Register a new user account
 - **Request Body**:
-
-```json
 {
   "name": "John Doe",
-  "email": "john.doe@example.com",
-  "password": "password123",
-  "role": "USER"
-}
-```
-
-- **Response Success**:
-
-```json
-{
-  "message": "User registered successfully"
-}
-```
-
-- **Response Error**:
-
-```json
-{
-  "error": "User with this email already exists"
-}
-```
-
-### 2. Login User
-
-- **URL**: `POST /api/auth/login`
-- **Auth**: None required
-- **Description**: Authenticate user and get JWT token
 - **Request Body**:
-
 ```json
-{
   "email": "admin@rith.codes",
   "password": "admin123"
-}
-```
-
-- **Response Success**:
-
-```json
-{
-  "token": "<jwt_token>",
-  "user": {
-    "id": 1,
-    "name": "Admin User",
-    "email": "admin@rith.codes",
-    "role": "ADMIN"
   }
 }
-```
-
-The frontend must store this token (e.g. localStorage) and add it to `Authorization` for all protected requests.
 
 ---
-
-## User Endpoints
-
-### 1. Get All Users (Admin only)
-
-- **URL**: `GET /api/users`
-- **Auth**: JWT + Role ADMIN required
-- **Description**: Retrieve all users
-- **Headers**:
-
-```http
-Authorization: Bearer <jwt_token>
-```
-
-- **Sample Response**:
-
-```json
-[
-  {
-    "id": 1,
-    "name": "Admin User",
-    "email": "admin@rith.codes",
-    "password": "$2a$10$encrypted_password",
-    "role": "ADMIN",
-    "createdAt": "2025-11-20T10:30:00.000+00:00"
-  }
-]
-```
-
-### 2. Create User
-
-- **URL**: `POST /api/users`
-- **Auth**: JWT required
-- **Description**: Create a new user
-- **Request Body**:
-
-```json
-{
-  "name": "Jane Smith",
-  "email": "jane.smith@example.com",
-  "password": "password123",
-  "role": "USER"
-}
-```
-
-### 3. Get User by ID
-
-- **URL**: `GET /api/users/{id}`
-- **Auth**: JWT required
-- **Description**: Get user details by ID
-
-- **Sample Response**:
-
-```json
-{
-  "id": 1,
-  "name": "John Doe",
-  "email": "john.doe@example.com",
-  "password": "$2a$10$encrypted_password",
-  "role": "USER",
-  "createdAt": "2025-11-20T10:30:00.000+00:00"
-}
-```
-
-### 4. Update User
-
-- **URL**: `PUT /api/users/{id}`
-- **Auth**: JWT required
-- **Description**: Update user information
-- **Request Body**:
-
-```json
-{
-  "name": "John Updated",
-  "email": "john.updated@example.com",
-  "role": "USER"
-}
-```
-
-### 5. Delete User (Admin only)
-
-- **URL**: `DELETE /api/users/{id}`
-- **Auth**: JWT + Role ADMIN required
-- **Description**: Delete user
-
----
-
-## Book Endpoints (Catalog)
-
-### 1. Get All Books
-
-- **URL**: `GET /api/books`
-- **Auth**: None required
-- **Description**: Retrieve all books
-- **Sample Response**:
-
-```json
-[
-  {
-    "bookID": 1,
-    "title": "The Great Gatsby",
-    "author": "F. Scott Fitzgerald",
-    "published_date": "1925-04-10",
-    "stock": 50,
-    "category": "Fiction",
-    "price": 12.99,
-    "description": "A classic American novel",
-    "imageURL": "https://example.com/gatsby.jpg"
-  }
-]
-```
-
-### 2. Create Book (requires API key)
-
-- **URL**: `POST /api/books`
-- **Auth**: API Key required
-- **Description**: Create a new book
-- **Headers**:
-
-```http
-X-API-Key: Jct6ISFPFCPTVN5Owb3zsf9j6CMWR3qADNrp9r18icxwkibA
-```
-
-- **Request Body**:
-
-```json
-{
-  "title": "To Kill a Mockingbird",
-  "author": "Harper Lee",
-  "published_date": "1960-07-11",
-  "stock": 30,
-  "category": "Fiction",
-  "price": 14.99,
-  "description": "A novel about racial injustice and childhood",
-  "imageURL": "https://example.com/mockingbird.jpg"
-}
-```
-
-### 3. Get Book by ID
-
-- **URL**: `GET /api/books/{id}`
-- **Auth**: None required
-
-### 4. Get Books by Category
-
-- **URL**: `GET /api/books/category/{category}`
-- **Auth**: None required
-- **Example**: `/api/books/category/Fiction`
-
-### 5. Search Books by Title
-
-- **URL**: `GET /api/books/search/title?title={title}`
-- **Auth**: None required
-- **Example**: `/api/books/search/title?title=Great`
-
-### 6. Search Books by Author
-
-- **URL**: `GET /api/books/search/author?author={author}`
-- **Auth**: None required
-- **Example**: `/api/books/search/author?author=Fitzgerald`
-
-### 7. Update Book (requires API key)
-
-- **URL**: `PUT /api/books/{id}`
-- **Auth**: API Key required
-- **Description**: Update book info
-
-### 8. Delete Book (requires API key)
-
-- **URL**: `DELETE /api/books/{id}`
-- **Auth**: API Key required
-
----
-
-## Order Endpoints (Checkout / Orders)
-
-### 1. Get All Orders
-
-- **URL**: `GET /api/orders`
-- **Auth**: JWT required
-- **Description**: Retrieve all orders
-- **Sample Response**:
-
-```json
-[
-  {
-    "id": 1,
-    "userId": 1,
-    "totalAmount": 27.98,
-    "status": "PENDING",
-    "paymentMethod": "CREDIT_CARD",
-    "paymentStatus": "PENDING",
-    "shippingAddress": "123 Main St, City, State, 12345",
-    "createdAt": "2025-11-20T10:30:00.000+00:00"
-  }
-]
-```
-
-### 2. Create Order
-
-- **URL**: `POST /api/orders`
-- **Auth**: JWT required
-- **Description**: Create a new order
-- **Request Body**:
-
-```json
-{
-  "userId": 1,
-  "totalAmount": 27.98,
-  "status": "PENDING",
-  "paymentMethod": "CREDIT_CARD",
-  "paymentStatus": "PENDING",
-  "shippingAddress": "123 Main St, City, State, 12345"
-}
-```
-
-### 3. Get Order by ID
-
-- **URL**: `GET /api/orders/{id}`
-- **Auth**: JWT required
-
-### 4. Get Orders by User ID
-
-- **URL**: `GET /api/orders/user/{userId}`
-- **Auth**: JWT required
-
-### 5. Get Orders by Status
-
-- **URL**: `GET /api/orders/status/{status}`
-- **Auth**: JWT required
-- **Example**: `/api/orders/status/PENDING`
-
-### 6. Get Orders by Payment Status
-
-- **URL**: `GET /api/orders/payment-status/{paymentStatus}`
-- **Auth**: JWT required
-- **Example**: `/api/orders/payment-status/COMPLETED`
-
-### 7. Update Order
-
-- **URL**: `PUT /api/orders/{id}`
-- **Auth**: JWT required
-
-### 8. Delete Order
-
-- **URL**: `DELETE /api/orders/{id}`
-- **Auth**: JWT required
-
----
-
-## Cart Item Endpoints (Shopping Cart)
-
-### 1. Get All Cart Items
-
-- **URL**: `GET /api/cart-items`
-- **Auth**: JWT required
-- **Description**: Retrieve all cart items
-- **Sample Response**:
-
-```json
-[
-  {
-    "id": 1,
-    "userId": 1,
-    "bookId": 1,
-    "quantity": 2,
-    "createdAt": "2025-11-20T10:30:00.000+00:00"
-  }
-]
-```
-
-### 2. Create Cart Item (Add to Cart)
-
-- **URL**: `POST /api/cart-items`
-- **Auth**: JWT required
-- **Request Body**:
-
-```json
-{
-  "userId": 1,
-  "bookId": 1,
-  "quantity": 2
-}
-```
-
-### 3. Get Cart Item by ID
-
-- **URL**: `GET /api/cart-items/{id}`
-- **Auth**: JWT required
-
-### 4. Get Cart Items by User ID
-
-- **URL**: `GET /api/cart-items/user/{userId}`
-- **Auth**: JWT required
-
-### 5. Update Cart Item
-
-- **URL**: `PUT /api/cart-items/{id}`
-- **Auth**: JWT required
-- **Request Body**:
-
-```json
-{
-  "id": 1,
-  "userId": 1,
-  "bookId": 1,
-  "quantity": 3
-}
-```
-
-### 6. Delete Cart Item
-
-- **URL**: `DELETE /api/cart-items/{id}`
-- **Auth**: JWT required
-
----
-
-## Payment Endpoints
-
-### 1. Get All Payments
-
-- **URL**: `GET /api/payments`
-- **Auth**: JWT required
-- **Description**: Retrieve all payments
-- **Sample Response**:
-
-```json
-[
-  {
-    "id": 1,
-    "orderId": 1,
-    "amount": 27.98,
-    "paymentMethod": "CREDIT_CARD",
-    "paymentStatus": "COMPLETED",
-    "createdAt": "2025-11-20T10:30:00.000+00:00"
-  }
-]
-```
-
-### 2. Create Payment
 
 - **URL**: `POST /api/payments`
 - **Auth**: JWT required
@@ -470,38 +46,32 @@ X-API-Key: Jct6ISFPFCPTVN5Owb3zsf9j6CMWR3qADNrp9r18icxwkibA
 
 ```json
 {
-  "orderId": 1,
+   - Book list page with search and category filter
   "amount": 27.98,
   "paymentMethod": "CREDIT_CARD",
   "paymentStatus": "PENDING"
 }
 ```
+   - Persist login with JWT in localStorage
 
-### 3. Get Payment by ID
+   - Add to cart from book pages
+   - Checkout flow with Bakong payment option
+   - Order history page
 
-- **URL**: `GET /api/payments/{id}`
-- **Auth**: JWT required
-- **Description**: Get payment details by ID
-
-### 4. Get Payments by Order ID
-
-- **URL**: `GET /api/payments/order/{orderId}`
-- **Auth**: JWT required
-- **Description**: Get all payments for a specific order
-
+3. **Admin Area** (if `role === 'ADMIN'`)
+   - User management
+   - Book management
 ### 5. Get Payments by Status
-
-- **URL**: `GET /api/payments/status/{status}`
-- **Auth**: JWT required
-- **Description**: Get payments by status
-- **Example**: `/api/payments/status/COMPLETED`
+4. **Error Handling**
+   - Display friendly error messages
+   - Redirect to login on 401
 
 ### 6. Get Payments by Method
 
-- **URL**: `GET /api/payments/method/{method}`
+## 🆕 BAKONG KHQR PAYMENT INTEGRATION
 - **Auth**: JWT required
 - **Description**: Get payments by method
-- **Example**: `/api/payments/method/CREDIT_CARD`
+The backend supports **Bakong KHQR** payment system for Cambodia. Customers can pay by scanning a QR code with their Bakong mobile app.
 
 ### 7. Update Payment
 
@@ -532,6 +102,8 @@ X-API-Key: Jct6ISFPFCPTVN5Owb3zsf9j6CMWR3qADNrp9r18icxwkibA
   "name": "admin@rith.codes",
   "principal_class": "org.springframework.security.core.userdetails.User",
   "authorities": ["ROLE_ADMIN"]
+---
+
 }
 ```
 
@@ -539,7 +111,7 @@ X-API-Key: Jct6ISFPFCPTVN5Owb3zsf9j6CMWR3qADNrp9r18icxwkibA
 
 ## Error Responses
 
-Common error formats:
+#### 2. Create Bakong Payment Component
 
 **400 Bad Request**:
 
@@ -548,21 +120,22 @@ Common error formats:
   "error": "Validation error message"
 }
 ```
-
+- Optional: Countdown timer (15 minutes)
 **401 Unauthorized**:
 
 ```json
 {
   "error": "Invalid credentials"
 }
-```
+// In src/lib/api.ts
 
 **403 Forbidden**:
+    const token = localStorage.getItem("token");
 
 ```json
 {
   "error": "Access denied"
-}
+        "Authorization": `Bearer ${token}`,
 ```
 
 **404 Not Found**:
@@ -628,7 +201,126 @@ Common error formats:
   "id": 1,
   "userId": 1,
   "bookId": 1,
+              size={256}
+              level="H"
+            />
+          </div>
+          
+          <div className="payment-info">
+            <p>Amount: {qrData.amount} {qrData.currency}</p>
+            <p>Bill Number: {qrData.billNumber}</p>
+          </div>
+          
+          <div className="instructions">
+            <h3>How to Pay:</h3>
+            <ol>
+              <li>Open your Bakong app</li>
+              <li>Scan this QR code</li>
+              <li>Confirm the payment amount</li>
+              <li>Complete the payment</li>
+            </ol>
+          </div>
+          
+          <button onClick={() => setQrData(null)}>
+            Generate New QR Code
+          </button>
+        </>
+      )}
+      
+      {error && <div className="error">{error}</div>}
+    </div>
+  );
+}
+```
+
+#### 5. User Flow
+
+1. **Checkout Page**: After user creates an order, show payment options
+2. **Select Bakong Payment**: User clicks "Pay with Bakong"
+3. **Generate QR**: System calls `/api/payments/bakong/generate-qr`
+4. **Display QR**: Show QR code with instructions
+5. **Customer Scans**: Customer scans QR with Bakong app
+6. **Payment Completion**: Customer confirms payment in app
+7. **Confirmation**: Show success message
+
+#### 6. Integration Points
+
+**Checkout Flow Update**:
+- Add "Pay with Bakong" as a payment method option
+- After order creation, redirect to Bakong payment page if selected
+- Pass order ID to BakongPayment component
+
+**Order Status**:
+- Initially mark order as "PENDING" with payment status "PENDING"
+- After successful Bakong payment, update to "COMPLETED"
+- Show order in user's order history
+
+#### 7. Styling Considerations
+
+- Make QR code prominent and easy to scan
+- Use Cambodian flag colors (red/blue) for branding
+- Responsive design for mobile devices
+- Clear, bilingual instructions (English/Khmer)
+- Loading states during QR generation
+- Error handling for failed generation
+
+#### 8. Testing
+
+**Test Scenarios**:
+1. Generate QR code with USD currency
+2. Generate QR code with KHR currency
+3. Handle invalid order ID (404 error)
+4. Handle authentication errors (401/403)
+5. Test QR code scanning with actual Bakong app
+6. Test on mobile devices (primary use case)
+
+**Test Order Creation**:
+```bash
+POST http://localhost:8080/api/orders
+Authorization: Bearer <token>
+Body: {
+  "userId": 1,
+  "totalAmount": 50.0,
+  "status": "PENDING",
+  "paymentMethod": "BAKONG",
+  "paymentStatus": "PENDING",
+  "shippingAddress": "123 Test St"
+}
+```
+
+#### 9. Optional Enhancements
   "quantity": 1,
+- **Timer**: Show 15-minute countdown for QR validity
+- **Payment Verification**: Poll `/api/payments/bakong/verify-payment` endpoint
+- **QR Download**: Allow users to download QR code as image
+- **Payment History**: Show Bakong payments in user's payment history
+- **Multi-language**: Full Khmer language support
+- **Mobile Optimization**: Optimize for mobile-first experience
+
+---
+
+## Summary of Implementation
+
+### Required Actions:
+1. ✅ Install `qrcode.react` package
+2. ✅ Create `BakongPayment` component
+3. ✅ Add Bakong API calls to API service layer
+4. ✅ Update checkout flow to include Bakong payment option
+5. ✅ Add "BAKONG" as payment method in Order model
+6. ✅ Test QR generation and display
+7. ✅ Style payment page with proper UX
+
+### Priority:
+**HIGH** - Core payment feature for Cambodia market
+
+### Estimated Effort:
+- 4-6 hours for basic implementation
+- 2-3 hours for styling and UX polish
+- 1-2 hours for testing
+
+---
+
+Build the frontend so that a developer can clone, `npm install`, `npm start`, and immediately talk to the backend at `http://localhost:8080` with all of the above behavior wired up, including the Bakong payment integration.
   "createdAt": "2025-11-20T10:30:00.000+00:00"
 }
 ```
@@ -678,3 +370,136 @@ Use the above API to build the following UX:
    - Redirect to login on `401` when appropriate
 
 Build the frontend so that a developer can clone, `npm install`, `npm start`, and immediately talk to the backend at `http://localhost:8080` with all of the above behavior wired up.
+
+---
+
+## NEW FEATURE: Bakong KHQR Payment Integration
+
+### Overview
+The backend now supports **Bakong KHQR** payment system for Cambodia. This allows customers to pay for orders by scanning a QR code with their Bakong mobile app.
+
+### Backend Endpoints
+
+#### 1. Generate Bakong QR Code
+- **URL**: `POST /api/payments/bakong/generate-qr`
+- **Auth**: JWT required
+- **Request Body**:
+```json
+{
+  "orderId": 1,
+  "currency": "USD"
+}
+```
+- **Response**:
+```json
+{
+  "qrCode": "00020101021229370016khqr.aba.com.kh0123456789...",
+  "md5": "abc123def456...",
+  "billNumber": "ORDER-1-1732781234567",
+  "amount": 50.0,
+  "currency": "USD"
+}
+```
+- **Supported Currencies**: `USD`, `KHR`
+
+#### 2. Verify Payment Status (Optional)
+- **URL**: `POST /api/payments/bakong/verify-payment?md5={md5}&orderId={orderId}`
+- **Auth**: JWT required
+- **Note**: Currently returns placeholder response
+
+### Frontend Implementation Requirements
+
+#### 1. Install QR Code Library
+```bash
+npm install qrcode.react
+```
+
+#### 2. Create Bakong Payment Page/Component
+
+**Features needed**:
+- Display order summary (order ID, total amount)
+- Currency selector (USD or KHR)
+- Button to "Generate QR Code"
+- Display QR code after generation
+- Show payment instructions in English/Khmer
+- Payment amount and bill number
+- Optional: Countdown timer (e.g., 15 minutes)
+- Optional: Poll for payment confirmation
+- Success/failure status handling
+
+#### 3. API Integration Example
+
+```typescript
+// In src/lib/api.ts or similar
+export const bakongAPI = {
+  generateQR: async (orderId: number, currency: string = "USD") => {
+    const response = await fetch("http://localhost:8080/api/payments/bakong/generate-qr", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${getAuthToken()}`,
+      },
+      body: JSON.stringify({ orderId, currency }),
+    });
+    
+    if (!response.ok) {
+      throw new Error("Failed to generate QR code");
+    }
+    
+    return await response.json();
+  },
+};
+```
+
+#### 4. Component Structure Example
+
+```tsx
+import { QRCodeSVG } from 'qrcode.react';
+import { useState } from 'react';
+
+function BakongPayment({ orderId, totalAmount }) {
+  const [qrData, setQrData] = useState(null);
+  const [currency, setCurrency] = useState('USD');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const generateQR = async () => {
+    setLoading(true);
+    try {
+      const data = await bakongAPI.generateQR(orderId, currency);
+      setQrData(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="bakong-payment">
+      <h2>Pay with Bakong</h2>
+      
+      {!qrData ? (
+        <>
+          <div className="order-summary">
+            <p>Order ID: {orderId}</p>
+            <p>Total Amount: ${totalAmount}</p>
+          </div>
+          
+          <div className="currency-selector">
+            <label>Currency:</label>
+            <select value={currency} onChange={(e) => setCurrency(e.target.value)}>
+              <option value="USD">USD</option>
+              <option value="KHR">KHR</option>
+            </select>
+          </div>
+          
+          <button onClick={generateQR} disabled={loading}>
+            {loading ? 'Generating...' : 'Generate QR Code'}
+          </button>
+        </>
+      ) : (
+        <>
+          <div className="qr-code-display">
+            <QRCodeSVG 
+              value={qrData.qrCode} 
