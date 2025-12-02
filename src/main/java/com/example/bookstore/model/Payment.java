@@ -9,12 +9,20 @@ public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @Column(name = "order_id")
     private Integer orderId;
+
     private float amount;
+
+    @Column(name = "method")
     private String paymentMethod;
+
+    @Column(name = "status")
     private String paymentStatus;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_at")
     private Date createdAt;
 
     public Payment() {}

@@ -10,6 +10,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.security.MessageDigest;
 import java.util.Base64;
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class BakongPaymentService {
@@ -41,6 +42,17 @@ public class BakongPaymentService {
     @Value("${bakong.api.token}")
     private String bakongApiToken;
 
+    @PostConstruct
+    public void validateConfiguration() {
+        if (bakongAccountId == null || bakongAccountId.isEmpty()) {
+            throw new IllegalStateException("Bakong account ID is not configured");
+        }
+        if (merchantName == null || merchantName.isEmpty()) {
+            throw new IllegalStateException("Merchant name is not configured");
+        }
+        logger.info("Bakong payment service initialized with merchant: {}", merchantName);
+    }
+
     /**
      * Generate Bakong KHQR code for payment (MOCK IMPLEMENTATION)
      *
@@ -58,13 +70,32 @@ public class BakongPaymentService {
      */
     public BakongPaymentResponse generateQRCode(String billNumber, Double amount, String currency) {
         try {
+            // Input validation
+            if (billNumber == null || billNumber.trim().isEmpty()) {
+                throw new IllegalArgumentException("Bill number is required");
+            }
+            if (amount == null || amount <= 0) {
+                throw new IllegalArgumentException("Amount must be greater than 0");
+            }
+            if (currency != null && !currency.equals("USD") && !currency.equals("KHR")) {
+                throw new IllegalArgumentException("Currency must be USD or KHR");
+            }
+
+            // Field length validation
+            if (billNumber.length() > 25) {
+                throw new IllegalArgumentException("Bill number cannot exceed 25 characters");
+            }
+            if (merchantName.length() > 25) {
+                logger.warn("Merchant name exceeds 25 characters, will be truncated");
+            }
+
             logger.info("⚠️ MOCK MODE: Starting Bakong QR generation - Bill: {}, Amount: {}, Currency: {}",
-                billNumber, amount, currency);
+                    billNumber, amount, currency);
             logger.warn("This is a MOCK implementation. Real Bakong SDK is not installed.");
 
             // Calculate expiration timestamp (15 minutes from now)
             LocalDateTime expirationTime = LocalDateTime.now(ZoneId.of("Asia/Phnom_Penh"))
-                .plusMinutes(QR_EXPIRATION_MINUTES);
+                    .plusMinutes(QR_EXPIRATION_MINUTES);
             String expirationTimestamp = expirationTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
 
             logger.info("QR code will expire at: {} (timestamp: {})", expirationTime, expirationTimestamp);
@@ -82,7 +113,7 @@ public class BakongPaymentService {
             paymentResponse.setMd5(md5Hash);
             paymentResponse.setBillNumber(billNumber);
             paymentResponse.setAmount(amount);
-            paymentResponse.setCurrency(currency);
+            paymentResponse.setCurrency(currency != null ? currency : "KHR");
 
             return paymentResponse;
 
@@ -96,21 +127,19 @@ public class BakongPaymentService {
      * Generate a simplified mock KHQR string for testing
      */
     private String generateMockKHQRString(String billNumber, Double amount, String currency, String expiration) {
-        // This is a simplified mock. Real KHQR follows EMV QR Code specification
-        StringBuilder qr = new StringBuilder();
-        qr.append("00020101"); // Payload Format Indicator
-        qr.append("010211"); // Point of Initiation Method
-        qr.append("29370016khqr.com"); // Merchant Account Information
-        qr.append("0116").append(bakongAccountId); // Bakong Account ID
-        qr.append("0103").append(currency); // Currency
-        qr.append("54").append(String.format("%04d", String.valueOf(amount).length())).append(amount); // Amount
-        qr.append("5802KH"); // Country Code
-        qr.append("59").append(String.format("%02d", merchantName.length())).append(merchantName); // Merchant Name
-        qr.append("60").append(String.format("%02d", merchantCity.length())).append(merchantCity); // Merchant City
-        qr.append("62").append(String.format("%02d", billNumber.length())).append(billNumber); // Bill Number
-        qr.append("6304"); // CRC placeholder
+        // Create mock QR data with all necessary information
+        String mockData = String.format(
+                "mock://bakong.payment?account=%s&merchant=%s&amount=%.2f&currency=%s&bill=%s&exp=%s&timestamp=%d",
+                bakongAccountId,
+                merchantName,
+                amount,
+                currency != null ? currency : "KHR",
+                billNumber,
+                expiration,
+                System.currentTimeMillis()
+        );
 
-        return Base64.getEncoder().encodeToString(qr.toString().getBytes());
+        return Base64.getEncoder().encodeToString(mockData.getBytes());
     }
 
     /**
@@ -135,4 +164,3 @@ public class BakongPaymentService {
         }
     }
 }
-
